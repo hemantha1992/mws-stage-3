@@ -1,3 +1,4 @@
+/* checking the cache - success */
 var cacheName='Cache-v-1';
 self.addEventListener('install', function(event) {
   event.waitUntil(
