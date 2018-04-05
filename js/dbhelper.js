@@ -143,21 +143,21 @@ class DBHelper {
    * Restaurant page URL.
    */
   static urlForRestaurant(restaurant) {
-    /*return (`./restaurant.html?id=${restaurant.id}`);*/
 	return (`./restaurant.html?id=${restaurant.id}`);
   }
 
   /**
    * Restaurant image URL.
    */
+     /* return default image */ 
   static imageUrlForRestaurant(restaurant) {
     return (`/img/${restaurant.photograph["small"]}`);
   }
-  
+      /* return all images */  
    static imageUrlForRestaurant_responsive(restaurant) {
     return (`/img/${restaurant.photograph["respons"]}`);
   }
-  
+      /* return image sizes */  
    static imageUrlForRestaurant_sizes(restaurant) {
     return (`${restaurant.photograph["sizes"]}`);
   }
