@@ -12,10 +12,15 @@
   <div id="header" >
      <h1><a href="">Restaurant Reviews</a></h1>
   </div>
-	<div id="main">
-	<div id="map">
+	<div id="main" >
+			<!-- Skipping to Main Content - forward tabbing -->
+			<div id="skip-forward"><a href="#main-content">Skip to Main Content</a></div>
+	<div id="map" role="presentation" tabindex="-1">
 	</div>
-	<div class="filter-options">
+			<!-- Skipping back to Header -backward tabbing -->
+	<div id="skip-backward"><a href="#header">Skip back to Header</a></div>
+	<div id="main-content" tabindex="-1"></div>
+	<div class="filter-options" tabindex="0">
 		<h2 tabindex="0" >Filter Results</h2>
 			<select id="neighborhoods-select" name="neighborhoods" onchange="updateRestaurants()">
 			  <option value="all">All Neighborhoods</option>

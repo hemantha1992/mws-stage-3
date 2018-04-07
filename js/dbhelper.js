@@ -158,9 +158,9 @@ class DBHelper {
     return (`/img/${restaurant.photograph["respons"]}`);
   }
       /* return image sizes */  
-   static imageUrlForRestaurant_sizes(restaurant) {
+  /* static imageUrlForRestaurant_sizes(restaurant) {
     return (`${restaurant.photograph["sizes"]}`);
-  }
+  }*/
   
 
   /**

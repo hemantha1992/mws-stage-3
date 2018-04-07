@@ -144,9 +144,9 @@ createRestaurantHTML = (restaurant) => {
   const image = document.createElement('img');
   image.className = 'restaurant-img'; 
   image.srcset=DBHelper.imageUrlForRestaurant_responsive(restaurant);
-  image.sizes=DBHelper.imageUrlForRestaurant_sizes(restaurant);
+  /*image.sizes=DBHelper.imageUrlForRestaurant_sizes(restaurant);*/
   image.src = DBHelper.imageUrlForRestaurant(restaurant);
-  image.alt=restaurant.name;
+  image.alt= 'An image from restaurant ' + restaurant.name;
   li.append(image);
 
   const neighborhood = document.createElement('p');

@@ -1,4 +1,39 @@
 /* css grid lay out */
+
+/* Skipping Google map in tabbing order - forward */
+#skip-forward a
+{ 
+position:absolute; 
+left:-10000px; 
+top:auto; 
+width:1px; 
+height:1px; 
+overflow:hidden;
+} 
+/* Skipping Google map in tabbing order - forward */
+ #skip-forward a:focus 
+{ 
+position:static; 
+width:auto; 
+height:auto; 
+} 
+
+#skip-backward a
+{ 
+position:absolute; 
+left:-20000px; 
+top:auto; 
+width:1px; 
+height:1px; 
+overflow:hidden;
+} 
+ #skip-backward a:focus 
+{ 
+position:static; 
+width:auto; 
+height:auto; 
+} 
+
 .grid-container {
   display: grid;
   grid-template-columns: auto;
