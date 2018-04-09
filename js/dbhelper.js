@@ -157,10 +157,10 @@ class DBHelper {
    static imageUrlForRestaurant_responsive(restaurant) {
     return (`/img/${restaurant.photograph["respons"]}`);
   }
-      /* return image sizes */  
-  /* static imageUrlForRestaurant_sizes(restaurant) {
+    /* return image sizes  */
+   static imageUrlForRestaurant_sizes(restaurant) {
     return (`${restaurant.photograph["sizes"]}`);
-  }*/
+  }
   
 
   /**

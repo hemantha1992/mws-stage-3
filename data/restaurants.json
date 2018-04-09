@@ -3,7 +3,7 @@
     "id": 1,
     "name": "Mission Chinese Food",
     "neighborhood": "Manhattan",
-    "photograph":{"small":"1-320_small.jpg","respons":"1-320_small.jpg, 1-640_medium.jpg, 1-800_large.jpg"},
+    "photograph":{"small":"1-320_small.jpg","respons":"1-640_medium.jpg , 1-800_large.jpg" , "sizes":"(max-width: 360px) 320px,(max-width: 760px) 640px,(min-width: 760px) 800px"},
     "address": "171 E Broadway, New York, NY 10002",
     "latlng": {
       "lat": 40.713829,
@@ -42,7 +42,7 @@
     "id": 2,
     "name": "Emily",
     "neighborhood": "Brooklyn",
-    "photograph":{"small":"2-320_small.jpg","respons":"2-640_medium.jpg , 2-800_large.jpg" , "sizes":"(max-width: 360px) 320px,(max-width: 760px) 640px,(min-width: 760px) 800px"},
+    "photograph":{"small":"2-320_medium.jpg","respons":"2-640_medium.jpg , 2-800_large.jpg" , "sizes":"(max-width: 360px) 320px,(max-width: 760px) 640px,(min-width: 760px) 800px"},
     "address": "919 Fulton St, Brooklyn, NY 11238",
     "latlng": {
       "lat": 40.683555,
