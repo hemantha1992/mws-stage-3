@@ -1,5 +1,6 @@
 /* checking the cache - success */
-var cacheName='Cache-v-1';
+var cacheName='Cache-v-19';
+var rest;
 self.addEventListener('install', function(event) {
   event.waitUntil(
     caches.open(cacheName).then(function(cache) {
@@ -7,8 +8,8 @@ self.addEventListener('install', function(event) {
       return cache.addAll(
         [
           'index.html',
+          'css/css-for-index.css',
           'restaurant.html',
-		  'css/css-for-index.css',
 		  'css/css-for-restaurant.css',
 		  'img/1-320_small.jpg',
 		  'img/1-640_medium.jpg',
@@ -39,10 +40,32 @@ self.addEventListener('install', function(event) {
 		  'img/9-800_large.jpg',
 		  'img/10-320_small.jpg',
 		  'img/10-640_medium.jpg',
-		  'img/10-800_large.jpg'
-		  
+		  'img/10-800_large.jpg',
+		  'data/restaurants.json'
         ]
       );
     })
   );
 });
+
+/* Fetch event */
+// Match in cache and fetch
+self.addEventListener('fetch', function (event) {
+
+  /* for restaurant URLs */
+      if(event.request.url.includes('restaurant.html?id=')){
+          const strippedurl = event.request.url.split('?')[0];
+            event.respondWith(
+              catches.match(strippedurl).then(function(response){
+                  return response || fetch(event.response);
+              })
+          );
+          return;
+      }
+  /* for all other URLs */
+      event.respondWith(
+          caches.match(event.request).then(function(response){
+              return response || fetch(event.request);
+          })
+      );
+  });

@@ -1,0 +1,25 @@
+{
+  "name": "mws-hemantha-stage-1-may-31",
+  "version": "1.0.0",
+  "description": "mws-restaurant-review-stage-2",
+  "main": "sw.js",
+  "dependencies": {
+    "idb": "^2.1.2"
+  },
+  "devDependencies": {
+    "gulp": "^4.0.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hemantha1992/mws-hemantha-stage-1.git"
+  },
+  "author": "Hemantha",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hemantha1992/mws-hemantha-stage-1/issues"
+  },
+  "homepage": "https://github.com/hemantha1992/mws-hemantha-stage-1#readme"
+}

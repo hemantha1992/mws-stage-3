@@ -115,6 +115,8 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
   }
   const ul = document.getElementById('reviews-list');
   ul.setAttribute('tabindex','0');
+  ul.setAttribute('role','listbox');
+  ul.setAttribute('aria-label','review-list');
   reviews.forEach(review => {
     ul.appendChild(createReviewHTML(review));
   });
@@ -127,6 +129,7 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
 createReviewHTML = (review) => {
   const li = document.createElement('li');
   li.setAttribute('tabindex','0');
+  li.setAttribute('role','listitem')
   const name = document.createElement('p');
   name.setAttribute('tabindex','0');
   name.innerHTML = review.name;
@@ -159,7 +162,9 @@ fillBreadcrumb = (restaurant=self.restaurant) => {
   const breadcrumb = document.getElementById('breadcrumb');
   const li = document.createElement('li');
   li.setAttribute('tabindex','0');
-  li.innerHTML = restaurant.name;
+  li.setAttribute('aria-current','page');
+  li.setAttribute('role','listitem')
+   li.innerHTML = restaurant.name;
   breadcrumb.appendChild(li);
 }
 
@@ -178,3 +183,15 @@ getParameterByName = (name, url) => {
     return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
+
+/* TODO: Add service worker script here */	  
+		if ('serviceWorker' in navigator) {
+		  navigator.serviceWorker.register('sw.js')
+			.then(function(registration) {
+			  console.log('Service Worker registration successful with scope: ',
+			  registration.scope);
+			})
+			.catch(function(err) {
+			  console.log('Service Worker registration failed: ', err);
+			});
+		}

@@ -1,6 +1,8 @@
+
 let restaurants,
   neighborhoods,
-  cuisines
+  cuisines,
+  dbPromise
 var map
 var markers = []
 
@@ -10,10 +12,23 @@ var markers = []
 document.addEventListener('DOMContentLoaded', (event) => {
   fetchNeighborhoods();
   fetchCuisines();
+  pushRestaurantsintoIndexedDB();
 });
 
 /**
- * Fetch all neighborhoods and set their HTML.
+** Storing restaurant data in indexedDB database.
+ */
+pushRestaurantsintoIndexedDB=() => {
+  DBHelper.fetchRestaurants((error,restaurants)=>{
+    if(error){console.error(error);}
+    else{
+      DBHelper.getRestaurantsforIndexedDB(restaurants);
+    }
+  })
+  }
+
+/**
+** Fetch all neighborhoods and set their HTML.
  */
 fetchNeighborhoods = () => {
   DBHelper.fetchNeighborhoods((error, neighborhoods) => {
@@ -24,15 +39,16 @@ fetchNeighborhoods = () => {
       fillNeighborhoodsHTML();
     }
   });
-}
+};
 
 /**
  * Set neighborhoods HTML.
  */
 fillNeighborhoodsHTML = (neighborhoods = self.neighborhoods) => {
   const select = document.getElementById('neighborhoods-select');
-  neighborhoods.forEach(neighborhood => {
+    neighborhoods.forEach(neighborhood => {
     const option = document.createElement('option');
+    option.setAttribute('aria-label','listitem')
     option.innerHTML = neighborhood;
     option.value = neighborhood;
     select.append(option);
@@ -58,9 +74,9 @@ fetchCuisines = () => {
  */
 fillCuisinesHTML = (cuisines = self.cuisines) => {
   const select = document.getElementById('cuisines-select');
-
   cuisines.forEach(cuisine => {
     const option = document.createElement('option');
+    option.setAttribute('aria-label','listitem')
     option.innerHTML = cuisine;
     option.value = cuisine;
     select.append(option);
@@ -137,6 +153,7 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
  */
 createRestaurantHTML = (restaurant) => {
   const li = document.createElement('li');
+  li.setAttribute('aria-label','listitem')
   const name = document.createElement('h1');
   name.innerHTML = restaurant.name;
   name.setAttribute('tabindex','0');
@@ -158,11 +175,11 @@ createRestaurantHTML = (restaurant) => {
   li.append(address);
 
   const more = document.createElement('a');
-  more.innerHTML ='View Details';
+  more.innerHTML ='<span style="font-size:large;">&#127869;</span> View Details';
   more.href = DBHelper.urlForRestaurant(restaurant);
   li.append(more)
 
-  return li
+  return li;
 }
 
 /**
@@ -179,3 +196,21 @@ addMarkersToMap = (restaurants = self.restaurants) => {
   });
 }
 
+
+
+ 
+/* TODO: Add service worker script here */	
+
+		if ('serviceWorker' in navigator) {
+		  navigator.serviceWorker.register('sw.js')
+			.then(function(registration) {
+			  console.log('Service Worker registration successful with scope: ',
+			  registration.scope);
+			})
+			.catch(function(err) {
+			  console.log('Service Worker registration failed: ', err);
+			});
+    };
+    
+
+ 
