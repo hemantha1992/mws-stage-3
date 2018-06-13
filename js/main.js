@@ -1,8 +1,6 @@
-
 let restaurants,
   neighborhoods,
-  cuisines,
-  dbPromise
+  cuisines
 var map
 var markers = []
 
@@ -10,25 +8,22 @@ var markers = []
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
  */
 document.addEventListener('DOMContentLoaded', (event) => {
-  fetchNeighborhoods();
-  fetchCuisines();
-  pushRestaurantsintoIndexedDB();
+  fetchNeighborhoods;
+  fetchCuisines;
+  //fetchindexedDBdata();
 });
 
-/**
-** Storing restaurant data in indexedDB database.
- */
-pushRestaurantsintoIndexedDB=() => {
-  DBHelper.fetchRestaurants((error,restaurants)=>{
-    if(error){console.error(error);}
-    else{
-      DBHelper.getRestaurantsforIndexedDB(restaurants);
-    }
-  })
-  }
+/*fetchindexedDBdata=() =>{
+DBHelper.fetchRestaurants((error,restaurants)=>{
+if(error){console.log(error)}
+else{
+return restaurants;
+}
+})
+}*/
 
 /**
-** Fetch all neighborhoods and set their HTML.
+ * Fetch all neighborhoods and set their HTML.
  */
 fetchNeighborhoods = () => {
   DBHelper.fetchNeighborhoods((error, neighborhoods) => {
@@ -39,7 +34,7 @@ fetchNeighborhoods = () => {
       fillNeighborhoodsHTML();
     }
   });
-};
+}
 
 /**
  * Set neighborhoods HTML.
@@ -179,7 +174,7 @@ createRestaurantHTML = (restaurant) => {
   more.href = DBHelper.urlForRestaurant(restaurant);
   li.append(more)
 
-  return li;
+  return li
 }
 
 /**
@@ -196,11 +191,7 @@ addMarkersToMap = (restaurants = self.restaurants) => {
   });
 }
 
-
-
- 
-/* TODO: Add service worker script here */	
-
+/* TODO: Add service worker script here */	  
 		if ('serviceWorker' in navigator) {
 		  navigator.serviceWorker.register('sw.js')
 			.then(function(registration) {
@@ -210,7 +201,5 @@ addMarkersToMap = (restaurants = self.restaurants) => {
 			.catch(function(err) {
 			  console.log('Service Worker registration failed: ', err);
 			});
-    };
-    
+		}
 
- 

@@ -4,10 +4,17 @@
   "description": "mws-restaurant-review-stage-2",
   "main": "sw.js",
   "dependencies": {
-    "idb": "^2.1.2"
+    "idb": "^2.1.2",
+    "imagemin-mozjpeg": "^7.0.0"
   },
   "devDependencies": {
-    "gulp": "^4.0.0"
+    "gulp": "^4.0.0",
+    "gulp-clean-css": "^3.9.4",
+    "gulp-concat": "^2.6.1",
+    "gulp-concat-css": "^3.1.0",
+    "gulp-imagemin": "^4.1.0",
+    "gulp-uglify": "^3.0.0",
+    "gulp-uglify-es": "^1.0.4"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

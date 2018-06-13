@@ -1,7 +1,6 @@
 /**
  * Common database helper functions.
  */
-
 class DBHelper {
 
   /**
@@ -9,17 +8,14 @@ class DBHelper {
    * Change this to restaurants.json file location on your server.
    */
   static get DATABASE_URL() {
-    const port = 1337 // Change this to your server port
-    //return `http://localhost:${port}/data/restaurants.json`;
-    return `http://localhost:${port}/restaurants`;
+    const port = 8000 // Change this to your server port
+    return `http://localhost:${port}/data/restaurants.json`;
   }
 
   /**
    * Fetch all restaurants.
    */
-
-   // use of xhr to get data
-  /*static fetchRestaurants(callback) {
+  static fetchRestaurants(callback) {
     let xhr = new XMLHttpRequest();
     xhr.open('GET', DBHelper.DATABASE_URL);
     xhr.onload = () => {
@@ -33,22 +29,7 @@ class DBHelper {
       }
     };
     xhr.send();
-  }*/
-
-  // Using fetch to get data
-  static fetchRestaurants(callback){
-    fetch(DBHelper.DATABASE_URL)
-    .then((response) => response.json())
-      .then((res) => {const restaurants = res;
-      callback(null,restaurants);
-       // DBHelper.pushRestaurants();
-       })
-    .catch(function(err){
-      const error = (`Request failed. Returned status of ${err}.`);
-     return callback(error,null);
-    });
-  }	
-
+  }
 
   /**
    * Fetch a restaurant by its ID.
@@ -180,32 +161,7 @@ class DBHelper {
    static imageUrlForRestaurant_sizes(restaurant) {
     return (`${restaurant.photograph["sizes"]}`);
   }
-
-  /* DBHelper for caching data inside indexedDB */
-
-  static getRestaurantsforIndexedDB(items){
-     dbPromise = idb.open('restaurant-reviews', 1, function(upgradeDb) {
-       upgradeDb.createObjectStore('restaurants', {keyPath: 'name'});
-       var store = upgradeDb.transaction.objectStore('restaurants');
-       store.createIndex('cusine_type', 'cuisine_type');
-       store.createIndex('neighborhood', 'neighborhood');
-      });
-      dbPromise.then(function(db) {
-        var tx = db.transaction('restaurants', 'readwrite');
-        var store = tx.objectStore('restaurants');
-         return Promise.all(items.map(function(item) {
-            console.log('Adding item: ', item);
-            return store.add(item);
-          })
-        ).catch(function(e) {
-          tx.abort();
-          console.log(e);
-        }).then(function() {
-          console.log('All items added successfully!');
-        });
-      });
-
-  }
+  
 
   /**
    * Map marker for a restaurant.
@@ -219,19 +175,6 @@ class DBHelper {
       animation: google.maps.Animation.DROP}
     );
     return marker;
-  };
+  }
+
 }
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
