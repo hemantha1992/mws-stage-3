@@ -1,26 +1,29 @@
 let restaurants,
   neighborhoods,
-  cuisines
-var map
-var markers = []
+  cuisines,
+  reviews;
+var map,
+yesno=true,
+markers = [];
 
 /**
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
  */
+
 document.addEventListener('DOMContentLoaded', (event) => {
-  fetchNeighborhoods;
-  fetchCuisines;
-  //fetchindexedDBdata();
+ fetchNeighborhoods;
+ fetchCuisines;
+  addFavourite;
 });
 
-/*fetchindexedDBdata=() =>{
-DBHelper.fetchRestaurants((error,restaurants)=>{
-if(error){console.log(error)}
-else{
-return restaurants;
+function tgl(){
+  if(yesno==true){document.getElementById('map').style.display="none";yesno=false;
+document.getElementById('bt').innerHTML="&#9788; Show Map";
 }
-})
-}*/
+ else{document.getElementById('map').style.display="block";yesno=true;
+  document.getElementById('bt').innerHTML="&#9728; Hide Map";
+}
+};
 
 /**
  * Fetch all neighborhoods and set their HTML.
@@ -46,6 +49,7 @@ fillNeighborhoodsHTML = (neighborhoods = self.neighborhoods) => {
     option.setAttribute('aria-label','listitem')
     option.innerHTML = neighborhood;
     option.value = neighborhood;
+    console.log(neighborhood);
     select.append(option);
   });
 }
@@ -89,8 +93,10 @@ window.initMap = () => {
   self.map = new google.maps.Map(document.getElementById('map'), {
     zoom: 12,
     center: loc,
-    scrollwheel: false
-  });
+    scrollwheel: false,
+    disableDefaultUI: true 
+   });
+        
   updateRestaurants();
 }
 
@@ -136,9 +142,12 @@ resetRestaurants = (restaurants) => {
  * Create all restaurants HTML and add them to the webpage.
  */
 fillRestaurantsHTML = (restaurants = self.restaurants) => {
+  const observer = lozad();
+  observer.observe();
   const ul = document.getElementById('restaurants-list');
   restaurants.forEach(restaurant => {
     ul.append(createRestaurantHTML(restaurant));
+    observer.observe();
   });
   addMarkersToMap();
 }
@@ -149,18 +158,18 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
 createRestaurantHTML = (restaurant) => {
   const li = document.createElement('li');
   li.setAttribute('aria-label','listitem')
-  const name = document.createElement('h1');
+  const name = document.createElement('h2');
   name.innerHTML = restaurant.name;
   name.setAttribute('tabindex','0');
   li.append(name);
   const image = document.createElement('img');
-  image.className = 'restaurant-img'; 
-  image.srcset=DBHelper.imageUrlForRestaurant_responsive(restaurant);
-  image.sizes=DBHelper.imageUrlForRestaurant_sizes(restaurant);
-  image.src = DBHelper.imageUrlForRestaurant(restaurant);
+  image.className = 'restaurant-img lozad'; 
+  image.setAttribute('data-srcset',DBHelper.imageUrlForRestaurant_responsive(restaurant));
+  image.setAttribute('data-sizes',DBHelper.imageUrlForRestaurant_sizes(restaurant));
+  image.setAttribute('data-src',DBHelper.imageUrlForLazy_load(restaurant));
   image.alt= 'An image from restaurant ' + restaurant.name;
   li.append(image);
-
+ 
   const neighborhood = document.createElement('p');
   neighborhood.innerHTML = restaurant.neighborhood;
   li.append(neighborhood);
@@ -168,13 +177,24 @@ createRestaurantHTML = (restaurant) => {
   const address = document.createElement('p');
   address.innerHTML = restaurant.address;
   li.append(address);
+  
+  const fvr = document.createElement('button');
+  fvr.setAttribute('is_favorite',DBHelper.favourite_restaurant(restaurant));
+  fvr.setAttribute('ID',DBHelper.restaurant_ID(restaurant));
+  fvr.setAttribute('type','button');
+  fvr.setAttribute('tabindex','0');
+  fvr.setAttribute('onclick','addFavourite(this)');
+  fvr.setAttribute('style','color:olive;font-size:large;background-color:lemonchiffon; margin-right:10px; width:60px;height:40px;border-radius:10px;');
+  fvr.innerHTML ='&#10084;';
+  li.append(fvr);
 
   const more = document.createElement('a');
-  more.innerHTML ='<span style="font-size:large;">&#127869;</span> View Details';
+  more.innerHTML ='<span style="font-size:large;"> &#127869;</span> View Details';
   more.href = DBHelper.urlForRestaurant(restaurant);
   li.append(more)
 
   return li
+
 }
 
 /**
@@ -191,12 +211,50 @@ addMarkersToMap = (restaurants = self.restaurants) => {
   });
 }
 
+/** Toggle favourite button with a non-persistent cookie */
+function addFavourite(x){
+  if(document.cookie.length==0){
+    for (var i=1;i<11;i++){
+    document.cookie='fav'+i+'=f'+i;
+    }
+  };
+  y='fav'+x.id;
+  var yy=getCookie(y) 
+  console.log(yy);
+  if(yy=='f'+x.id||document.cookie.length==0){x.style.color="#ff0000";document.cookie='fav'+x.id+'=y'+x.id;}
+  else{x.style.color="olive";document.cookie='fav'+x.id+'=f'+x.id}
+};
+
+function getCookie(cname) {
+  var name = cname + "=";
+  var decodedCookie = decodeURIComponent(document.cookie);
+  var ca = decodedCookie.split(';');
+  for(var i = 0; i <ca.length; i++) {
+      var c = ca[i];
+      while (c.charAt(0) == ' ') {
+          c = c.substring(1);
+      }
+      if (c.indexOf(name) == 0) {
+          return c.substring(name.length, c.length);
+      }
+  }
+  return "";
+}
+
+function setCookie(cname, cvalue, exdays) {
+  var d = new Date();
+  d.setTime(d.getTime() + (exdays*24*60*60*1000));
+  var expires = "expires="+ d.toUTCString();
+  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+/** Toggle favourite at the database */
+
 /* TODO: Add service worker script here */	  
 		if ('serviceWorker' in navigator) {
 		  navigator.serviceWorker.register('sw.js')
 			.then(function(registration) {
-			  console.log('Service Worker registration successful with scope: ',
-			  registration.scope);
+			  console.log('Service Worker registration successful with scope: ',registration.scope);
 			})
 			.catch(function(err) {
 			  console.log('Service Worker registration failed: ', err);

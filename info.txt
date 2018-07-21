@@ -1,0 +1,2 @@
+bitbucket: git clone https://vivaxsol@bitbucket.org/vivaxsol/mws-restaurant-stage-3.git
+git push push https://vivaxsol@bitbucket.org/vivaxsol/mws-restaurant-stage-3.git

@@ -1,34 +1,87 @@
 /**
  * Common database helper functions.
  */
-class DBHelper {
 
-  /**
-   * Database URL.
-   * Change this to restaurants.json file location on your server.
-   */
+
+ class DBHelper {
   static get DATABASE_URL() {
-    const port = 8000 // Change this to your server port
-    return `http://localhost:${port}/data/restaurants.json`;
+    const port = 1337 // Change this to your server port
+    return `http://localhost:${port}/restaurants`;
+  }
+  static get DATABASE_URL_R() {
+    const port = 1337 // Change this to your server port
+    return `http://localhost:${port}/reviews`;
   }
 
+  static readDB_Restaurants(){
+    return idb.open('restaurants', 1).then(function(db) {
+    var tx = db.transaction('details', 'readonly');
+    var store = tx.objectStore('details');
+    return store.getAll();
+  }).then(function(items) {
+    const restaurants=JSON.stringify(items);
+      return items;  
+    })
+  }
+  static readDB_Reviews(){
+    return idb.open('reviews', 1).then(function(db) {
+    var tx = db.transaction(['details'], 'readonly');
+    var store = tx.objectStore('details');
+    return store.getAll();
+  }).then(function(items) {
+    const reviews=JSON.stringify(items);
+      return items;  
+    })
+  }
+
+    
+static fetchRestaurants(callback){
   /**
-   * Fetch all restaurants.
+   * Checking the state of online/offline to populate the UI from indexedDB
    */
-  static fetchRestaurants(callback) {
-    let xhr = new XMLHttpRequest();
-    xhr.open('GET', DBHelper.DATABASE_URL);
-    xhr.onload = () => {
-      if (xhr.status === 200) { // Got a success response from server!
-        const json = JSON.parse(xhr.responseText);
-        const restaurants = json.restaurants;
-        callback(null, restaurants);
-      } else { // Oops!. Got an error from server.
-        const error = (`Request failed. Returned status of ${xhr.status}`);
-        callback(error, null);
-      }
+  if(navigator.onLine===false){
+    DBHelper.readDB_Restaurants()
+    .then(function(data){
+      callback(null, data);
+  }); 
+  return;
+  };
+  fetch(DBHelper.DATABASE_URL)
+    .then((response) =>  
+    response.json())
+    .then((res) => {
+      const restaurants = res;
+      callback(null,restaurants);
+       })
+    .catch(function(err){
+      const error = (`Request failed. Returned status of ${err}.`);
+  });
+}
+
+ /**
+   * Fetch a reviews
+   */
+
+  static fetchReviews(callback){
+    if(navigator.onLine===false){
+      DBHelper.readDB_Reviews()
+      .then(function(data){
+        //console.log(data);
+        reviews=data;
+        callback(null, reviews);
+    }); 
+    return;
     };
-    xhr.send();
+    fetch(DBHelper.DATABASE_URL_R)
+      .then((response) =>  
+       response.json())
+      .then((res) => {
+        const reviews = res;    
+        callback(null,reviews);
+         })
+      .catch(function(err){
+        const error = (`Request failed. Returned status of ${err}.`);
+    }); 
   }
 
   /**
@@ -50,6 +103,26 @@ class DBHelper {
     });
   }
 
+/* Fetch reviews by id */
+
+  static fetchReviewsById(id,callback) {
+    // fetch all reviews with proper error handling.
+    DBHelper.fetchReviews((error, reviews) => {
+      if (error) {
+        callback(error, null);
+      } else {
+        const review = reviews.find(r => r.id == id);
+        if (review) { // Got the review
+          //console.log(reivew)
+          callback(null, review);
+        } else { // Review does not exist in the database
+          callback('There are no reviews for this restaurant.', null);
+        }
+      }
+    });
+  } 
+
+
   /**
    * Fetch restaurants by a cuisine type with proper error handling.
    */
@@ -61,6 +134,7 @@ class DBHelper {
       } else {
         // Filter restaurants to have only given cuisine type
         const results = restaurants.filter(r => r.cuisine_type == cuisine);
+
         callback(null, results);
       }
     });
@@ -102,6 +176,8 @@ class DBHelper {
       }
     });
   }
+
+
 
   /**
    * Fetch all neighborhoods with proper error handling.
@@ -161,7 +237,17 @@ class DBHelper {
    static imageUrlForRestaurant_sizes(restaurant) {
     return (`${restaurant.photograph["sizes"]}`);
   }
-  
+
+  static imageUrlForLazy_load(restaurant)  {
+    return (`/img/${restaurant.photograph["lazy"]}`);
+  }
+
+  static favourite_restaurant(restaurant){
+    return (restaurant.is_favorite);
+  }
+  static restaurant_ID(restaurant){
+    return (restaurant.id);
+  }
 
   /**
    * Map marker for a restaurant.
@@ -176,5 +262,6 @@ class DBHelper {
     );
     return marker;
   }
+
 
 }
