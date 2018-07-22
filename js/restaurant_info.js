@@ -235,9 +235,8 @@ function postReview(){
   var rName=document.getElementById('name').value;
   var rRating=document.getElementById('rating').value;
   var rComments=document.getElementById('comments').value;
-  var url = 'http://localhost:1337/reviews/';
   var data = {restaurant_id:Number(rest_id),name:rName,rating:Number(rRating),comment:rComments};
-  return createForOffline(data)
+  createForOffline(data)
   .then(()=> {return navigator.serviceWorker.ready})
   .then(reg => {
   return reg.sync.register('myF');
@@ -256,13 +255,14 @@ function createForOffline(dataitem){
   .then(function(db){
     var tx = db.transaction('review', 'readwrite');
     var store = tx.objectStore('review');	
+    store.clear();
     store.add(dataitem);
     return tx.complete;
   })
   .then(function(){
     console.log('Post review data to indexeddb - done! ');
   }).catch(function(e){
-    console.log('from createoffline: ' + e);
+    console.log('Error from createoffline: ' + e);
   });
 }
 

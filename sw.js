@@ -140,21 +140,27 @@ self.addEventListener('fetch', function (event) {
 	 };
 
 	 /* background sync with the form and indexeddb database */
-	 
+
 	self.addEventListener('sync', event => {
-			if (event.tag == 'myF') {
-				console.log(event.request.url);
+			if (event.tag === 'myF') {
+				console.log(555);
 		  event.waitUntil(
 				getDataFromOutbox().then(messages => {
+					//console.log(messages);
 					// Post the messages to the server
 					return fetch('http://localhost:1337/reviews/', {
 					method: 'POST',
 					body: JSON.stringify(messages),
-					headers: { 'Content-Type': 'application/json' }
-					}).then(() => {
-					// Success! Remove them from the outbox				
+					headers: { 'Content-Type': 'application/json','Accept': 'application/json'}
+					}).then((res) => {
+					// Success! Remove them from the outbox	
+					console.log(res);	
+					var response=res.json();
 					removeDataFromOutbox();
-					});
+					})
+				}).then(() => {
+					// Tell pages of your success so they can update UI
+					return clients.matchAll({ includeUncontrolled: true });
 			})
 			)}
 		});	
@@ -162,13 +168,10 @@ self.addEventListener('fetch', function (event) {
 		function getDataFromOutbox(){
 		return idb.open('new-review', 1)
 		.then(function(db){
-				var tx = db.transaction('review', 'readonly');
+			var tx = db.transaction('review', 'readonly');
 			var store = tx.objectStore('review');
-			console.log(url);
-			return store.getAll();
-		})
-		.then(function(data){
-			console.log(data);
+			console.log(8);
+		    return store.getAll();
 		})
 		.catch(function(err){
 			console.log(err);
@@ -180,15 +183,47 @@ self.addEventListener('fetch', function (event) {
 		.then(function(db){
 			var tx = db.transaction('review', 'readwrite');
 			var store = tx.objectStore('review');
-			return store.clear();
-		})
-		.then(function(){
-			console.log('deleted')
+			store.clear();
+		    return tx.complete;
 		})
 		.catch(function(e){
 			console.log(e);
 		});
-}		
+	}
+
+	/*self.addEventListener('sync', event => {
+		if (event.tag == 'myF') {
+	  event.waitUntil(
+		  idb.open('new-review', 1)
+		.then(function(db){
+				var tx = db.transaction('review', 'readonly');
+			var store = tx.objectStore('review');
+			console.log(url);
+			return store.getAll();
+		})
+		.then(messages => {
+				// Post the messages to the server
+				return fetch('http://localhost:1337/reviews/', {
+				method: 'POST',
+				body: JSON.stringify(messages),
+				headers: { 'Content-Type': 'application/json' }
+				}).then(() => {
+				// Success! Remove them from the outbox				
+				return idb.open('new-review', 1)
+				.then(function(db){
+					var tx = db.transaction('review', 'readwrite');
+					var store = tx.objectStore('review');
+					return store.clear();
+				})})
+				.then(function(){
+					console.log('deleted')
+				})
+				.catch(function(e){
+					console.log(e);
+				});
+		}))}}*/
+
+			
 
 
 
