@@ -1,8 +1,6 @@
 /**
  * Common database helper functions.
  */
-
-
  class DBHelper {
   static get DATABASE_URL() {
     const port = 1337 // Change this to your server port
@@ -134,7 +132,7 @@ static fetchRestaurants(callback){
       } else {
         // Filter restaurants to have only given cuisine type
         const results = restaurants.filter(r => r.cuisine_type == cuisine);
-
+        alert(results);
         callback(null, results);
       }
     });
@@ -182,9 +180,10 @@ static fetchRestaurants(callback){
   /**
    * Fetch all neighborhoods with proper error handling.
    */
+
   static fetchNeighborhoods(callback) {
     // Fetch all restaurants
-    DBHelper.fetchRestaurants((error, restaurants) => {
+     DBHelper.fetchRestaurants((error, restaurants) => {
       if (error) {
         callback(error, null);
       } else {
@@ -240,10 +239,6 @@ static fetchRestaurants(callback){
 
   static imageUrlForLazy_load(restaurant)  {
     return (`/img/${restaurant.photograph["lazy"]}`);
-  }
-
-  static favourite_restaurant(restaurant){
-    return (restaurant.is_favorite);
   }
   static restaurant_ID(restaurant){
     return (restaurant.id);

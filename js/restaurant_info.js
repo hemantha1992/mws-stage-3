@@ -117,6 +117,7 @@ fillReviewsHTML = (reviews) => {
   const title = document.createElement('h3');
   title.innerHTML = 'Reviews';
   title.setAttribute('tabindex','0');
+  title.setAttribute('id','rvwh');
   container.appendChild(title);
   var f = document.createElement("form");
         //f.setAttribute('target','_blank');
@@ -143,7 +144,7 @@ fillReviewsHTML = (reviews) => {
         i1.setAttribute('aria-label','text-box');
         /* Name Label */
         var l1=document.createElement('label');
-        l1.innerText=' Name: ';
+        l1.innerText='Name: ';
         l1.setAttribute('tabindex','0');
         l1.setAttribute('aria-label','label');
         /* Name Input */
@@ -189,7 +190,7 @@ fillReviewsHTML = (reviews) => {
         s.setAttribute('value','Submit');
         s.setAttribute('onclick','postReview()');
         s.setAttribute('id','btn');
-        s.setAttribute('style',"margin-bottom:10px;");
+        s.setAttribute('style','margin-bottom:10px;padding:5px;border-radius:5px;width:60px;height:30px;');
         s.setAttribute('tabindex','0');
         s.setAttribute('aria-label','submit-button');
         /* Adding Elements */

@@ -4,6 +4,7 @@ let restaurants,
   reviews;
 var map,
 yesno=true,
+favno=false,
 markers = [];
 
 /**
@@ -13,17 +14,7 @@ markers = [];
 document.addEventListener('DOMContentLoaded', (event) => {
  fetchNeighborhoods;
  fetchCuisines;
-  addFavourite;
 });
-
-function tgl(){
-  if(yesno==true){document.getElementById('map').style.display="none";yesno=false;
-document.getElementById('bt').innerHTML="&#9788; Show Map";
-}
- else{document.getElementById('map').style.display="block";yesno=true;
-  document.getElementById('bt').innerHTML="&#9728; Hide Map";
-}
-};
 
 /**
  * Fetch all neighborhoods and set their HTML.
@@ -43,8 +34,10 @@ fetchNeighborhoods = () => {
  * Set neighborhoods HTML.
  */
 fillNeighborhoodsHTML = (neighborhoods = self.neighborhoods) => {
+  console.log(neighborhoods);
   const select = document.getElementById('neighborhoods-select');
     neighborhoods.forEach(neighborhood => {
+      console.log(neighborhood);
     const option = document.createElement('option');
     option.setAttribute('aria-label','listitem')
     option.innerHTML = neighborhood;
@@ -61,7 +54,8 @@ fetchCuisines = () => {
   DBHelper.fetchCuisines((error, cuisines) => {
     if (error) { // Got an error!
       console.error(error);
-    } else {
+    }
+    else {
       self.cuisines = cuisines;
       fillCuisinesHTML();
     }
@@ -95,8 +89,7 @@ window.initMap = () => {
     center: loc,
     scrollwheel: false,
     disableDefaultUI: true 
-   });
-        
+   });   
   updateRestaurants();
 }
 
@@ -179,8 +172,8 @@ createRestaurantHTML = (restaurant) => {
   li.append(address);
   
   const fvr = document.createElement('button');
-  fvr.setAttribute('is_favorite',DBHelper.favourite_restaurant(restaurant));
-  fvr.setAttribute('ID',DBHelper.restaurant_ID(restaurant));
+  fvr.setAttribute('value',restaurant.is_favorite);
+  fvr.setAttribute('id',DBHelper.restaurant_ID(restaurant));
   fvr.setAttribute('type','button');
   fvr.setAttribute('tabindex','0');
   fvr.setAttribute('onclick','addFavourite(this)');
@@ -211,53 +204,49 @@ addMarkersToMap = (restaurants = self.restaurants) => {
   });
 }
 
-/** Toggle favourite button with a non-persistent cookie */
+/** The function that determines the favourite or not button */
 function addFavourite(x){
-  if(document.cookie.length==0){
-    for (var i=1;i<11;i++){
-    document.cookie='fav'+i+'=f'+i;
+  var data=self.restaurants[x.id];
+  if(favno==false){x.style.color="#ff0000";favno=true;}
+  else{
+    x.style.color="olive";favno=false;
+  }
+  if (favno==true){data={"is_favorite":true};
+  }
+  else{data={"is_favorite":false};
+  }
+  console.log(data.is_favorite);
+  return fetch('http://localhost:1337/restaurants/'+x.id, {
+    method: 'PUT',
+    body: JSON.stringify(data),
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
     }
-  };
-  y='fav'+x.id;
-  var yy=getCookie(y) 
-  console.log(yy);
-  if(yy=='f'+x.id||document.cookie.length==0){x.style.color="#ff0000";document.cookie='fav'+x.id+'=y'+x.id;}
-  else{x.style.color="olive";document.cookie='fav'+x.id+'=f'+x.id}
+  })
+  .catch(function(error){
+    console.log(error);
+  });
+}
+
+
+/* Toggle button for Google Mpa - hide/show */
+function tgl(){
+  if(yesno==true){document.getElementById('map').style.display="none";yesno=false;
+    document.getElementById('bt').innerHTML="&#9788; Show Map";
+  }
+ else{document.getElementById('map').style.display="block";yesno=true;
+    document.getElementById('bt').innerHTML="&#9728; Hide Map";
+  }
 };
 
-function getCookie(cname) {
-  var name = cname + "=";
-  var decodedCookie = decodeURIComponent(document.cookie);
-  var ca = decodedCookie.split(';');
-  for(var i = 0; i <ca.length; i++) {
-      var c = ca[i];
-      while (c.charAt(0) == ' ') {
-          c = c.substring(1);
-      }
-      if (c.indexOf(name) == 0) {
-          return c.substring(name.length, c.length);
-      }
-  }
-  return "";
-}
-
-function setCookie(cname, cvalue, exdays) {
-  var d = new Date();
-  d.setTime(d.getTime() + (exdays*24*60*60*1000));
-  var expires = "expires="+ d.toUTCString();
-  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-}
-
-/** Toggle favourite at the database */
-
-/* TODO: Add service worker script here */	  
-		if ('serviceWorker' in navigator) {
+if ('serviceWorker' in navigator) {
 		  navigator.serviceWorker.register('sw.js')
 			.then(function(registration) {
 			  console.log('Service Worker registration successful with scope: ',registration.scope);
-			})
+		})
 			.catch(function(err) {
 			  console.log('Service Worker registration failed: ', err);
 			});
-		}
+}
 

@@ -89,10 +89,10 @@ height:auto;
 
 /* ====================== Restaurant Details ====================== */
 
- #restaurant-name {
+#restaurant-name {
   color: #f18200;
   font-family: Arial,sans-serif;
-  font-size: 16pt;
+  font-size: 20pt;
   letter-spacing: 0;
   margin: 15px 0 30px;
   text-transform: uppercase;
@@ -124,19 +124,23 @@ height:auto;
   margin:auto;
 }
  #reviews-container {
-  padding: 15px;
+  padding: 25px;
   margin:auto;
-}
- #reviews-container h2 {
+  max-width:600px;
+ }
+ #reviews-container h3 {
   color: #f58500;
-  font-size: 24pt;
+  font-size: 20pt;
   letter-spacing: -1px;
   padding-bottom: 1pt;
+  border-left:20px maroon solid;
+  border-right:20px maroon solid;
+  border-radius:10px;
 }
  #reviews-list {
    margin:auto;
-   padding:20px;
-   padding-top:10px;
+   padding:30px;
+   padding-top:20px;
 }
 #reviews-list li {
   background-color: #fff;
@@ -144,9 +148,13 @@ height:auto;
   display: block;
   list-style-type: none;
   overflow: hidden;
-  padding: 0 12px 12px;
+  padding: 0 16px 16px;
   position: relative;
+  border-top-color:maroon; 
+  border-top-left-radius:10px;
+  border-top-right-radius:10px; 
 }
+
 #reviews-list li p {
   margin: 0 0 10px;
 }
