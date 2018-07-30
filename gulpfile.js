@@ -22,7 +22,7 @@ gulp.task("uglify", function () {
     return gulp.src("js/restaurant_info.js")
         .pipe(rename("restaurant_info.js"))
         .pipe(uglify(/* options */))
-        .pipe(gulp.dest("js-post"));
+        .pipe(gulp.dest("js-pro"));
 });
 
 gulp.task('minify-css', () => {

@@ -2,12 +2,11 @@
 importScripts('js/idb.js');
 importScripts('js/dbhelper.js');
 
-
 /* checking the cache - success */
 var cacheName='Cache-v-8';
 self.addEventListener('install', function(event) {
-	createDB_Restaurants();
-	createDB_Reviews();
+	//createDB_Restaurants();
+	//createDB_Reviews();
   event.waitUntil(
     caches.open(cacheName).then(function(cache) {
 		/* caching *.html files, *.css files and .jpg images with cache API - service worker */
@@ -54,14 +53,24 @@ self.addEventListener('install', function(event) {
 					'img/10-320_small.jpg',
 					'img/10-640_medium.jpg',
 					'img/10-800_large.jpg',
-					'data/restaurants.json',
 					'js/dbhelper.js',
 					'js/idb.js',
 					'js/main.js',
 					'js/restaurant_info.js'
 				])
-			}),createDB_Restaurants(),createDB_Reviews()		
+			})
+			.then(function(){
+				console.log(7);
+			})
+			.catch(function(err){
+				console.log(err);
+			})	
 	)
+});
+
+self.addEventListener('activate',function(event){
+ createDB_Restaurants();
+ createDB_Reviews();
 });
 
 /* Fetch event */
@@ -87,17 +96,11 @@ self.addEventListener('fetch', function (event) {
 			);
 
 });
-/* 		createDB_Restaurants()
-		createDB_Reviews()*/
-	/*
-		* storing data in indexeddb	
-	*/
 
-
-	function createDB_Restaurants() {
+function createDB_Restaurants() {
 	 return idb.open('restaurants', 1, function(upgradeDB) {
 		  var store = upgradeDB.createObjectStore('details', {
-			keyPath: 'name'
+			keyPath: 'id'
 			});
 				}).then(function(db){
 			DBHelper.fetchRestaurants((error,restaurants)=>{
@@ -107,23 +110,22 @@ self.addEventListener('fetch', function (event) {
 					var store = tx.objectStore('details');
 					var items=restaurants;
 					return Promise.all(items.map(function(item) {
-						return store.add(item);
+						return store.put(item);
 						})
 					).catch(function(e) {
 					  tx.abort();
 					  console.log(e);
 					}).then(function() {
-					  console.log('Restaurants - all restaurants added successfully!');
 					});
 				}
 			})
 		})	
-	};
+};
 
-	function createDB_Reviews() {
+function createDB_Reviews() {
 		return idb.open('reviews', 1, function(upgradeDB) {
 			 var store = upgradeDB.createObjectStore('details', {
-			 keyPath: 'id'
+			 keyPath: 'id',autoIncrement:true
 			 });
 				 }).then(function(db){
 			 DBHelper.fetchReviews((error,reviews)=>{
@@ -131,84 +133,18 @@ self.addEventListener('fetch', function (event) {
 				 else{
 					 var tx = db.transaction('details', 'readwrite');
 					 var store = tx.objectStore('details');
-					 var items=reviews;
+					  var items=reviews;
 					 return Promise.all(items.map(function(item) {
+						 console.log('Db reviews '+item);
 						 return store.add(item);
 						 })
 					 ).catch(function(e) {
 						 tx.abort();
 						 console.log(e);
 					 }).then(function() {
-						 console.log('Reviews - all items added successfully!');
 					 });
 				 }
 			 })
 		 })
-	 };
-		
-	self.addEventListener('sync', event => {
-			if (event.tag == 'myF') {
-				console.log(event.request.url);
-		  event.waitUntil(
-				getDataFromOutbox().then(messages => {
-					// Post the messages to the server
-					return fetch('http://localhost:1337/reviews/', {
-					method: 'POST',
-					body: JSON.stringify(messages),
-					headers: { 'Content-Type': 'application/json' }
-					}).then(() => {
-					// Success! Remove them from the outbox				
-					removeDataFromOutbox();
-					});
-			})
-			)}
-		});	
-
-		function getDataFromOutbox(){
-		return idb.open('new-review', 1)
-		.then(function(db){
-				var tx = db.transaction('review', 'readonly');
-			var store = tx.objectStore('review');
-			console.log(url);
-			return store.getAll();
-		});
-	}
-
-	function removeDataFromOutbox(){
-		return idb.open('new-review', 1)
-		.then(function(db){
-			var tx = db.transaction('review', 'readwrite');
-			var store = tx.objectStore('review');
-			return store.clear();
-		})
-		.then(function(){
-			console.log('deleted')
-		})
-		.catch(function(e){
-			console.log(e);
-		});
-}		
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	
-
-	
-
-
-	
-
-
+ };
 

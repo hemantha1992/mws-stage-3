@@ -1,4 +1,146 @@
-#restaurants-list {
+ 
+ /* =============================   Mobile   ================================================= */
+ @media screen and (max-width:600px){
+  #restaurants-list {
+    display:flex;
+    flex-direction:column; 
+    justify-content: center;  
+    background-color: #fffacd;
+   list-style: outside none none;
+   margin:auto;
+   padding: 30px 15px 60px;
+  } 
+
+  /* ====================== Restaurant Listing ====================== */
+ #restaurants-list li {
+   background-color: #fff;
+   border-bottom: 2px solid #ccc;
+   font-family: Arial,sans-serif;
+   margin: 15px;
+   padding: 0 30px 25px;
+   padding-top:20px;
+ }
+ #restaurants-list .restaurant-img {
+   background-color: #ccc;
+   display: block;
+   border-radius:10px;
+   margin: auto;
+   max-width:100%;
+ }
+ #restaurants-list li h1 {
+   color: #800000;
+   font-family: Arial,sans-serif;
+   font-size: 18pt;
+   font-weight: 200;
+   letter-spacing: 0;
+   line-height: 1.4;
+   margin: 20px 0 10px;
+   text-transform: uppercase;
+   text-align:center;
+ }
+ #restaurants-list p {
+   margin-top: 10px;
+   font-size: 16pt;
+ }
+ #restaurants-list li a {
+   background-color: #800000;
+   border-bottom: 3px solid #eee;
+   color: #fff;
+   display: inline-block;
+   border-radius:7px;
+   font-size: 6pt;
+   margin: 15px 0 0;
+   padding: 8px 30px 10px;
+   text-align: center;
+   text-decoration: none;
+   text-transform: uppercase;
+ }
+ /* ====================== Map ====================== */
+#map {
+  height: 250px;
+  width: auto;
+  background-color: #ccc;
+  margin:auto;
+  margin-top:20px;
+  border:4px solid #ffaadd;
+  border-radius:5px;
+  padding:20px;
+}
+} 
+
+ /* =============================  Tablet   ================================================= */
+ @media screen and (min-width:601px){
+  #restaurants-list {
+    display:flex;
+    flex-flow:row wrap; 
+    justify-content: center;  
+    background-color: #fffacd;
+   list-style: outside none none;
+   margin:auto;
+   padding: 30px 15px 60px;
+  } 
+
+  /* ====================== Restaurant Listing ====================== */
+ #restaurants-list li {
+   background-color: #fff;
+   border-bottom: 2px solid #ccc;
+   font-family: Arial,sans-serif;
+   margin:auto;
+   padding: 0 30px 25px;
+   padding-top:20px;
+   width:200px;
+ }
+ #restaurants-list .restaurant-img {
+   background-color: #ccc;
+   display: block;
+   border-radius:10px;
+   margin: auto;
+   max-width:100%;
+ }
+ #restaurants-list li h1 {
+   color: #800000;
+   font-family: Arial,sans-serif;
+   font-size: 10pt;
+   font-weight: bold;
+   letter-spacing: 0;
+   line-height: 1.4;
+   margin: 20px 0 10px;
+   text-transform: uppercase;
+   text-align:center;
+ }
+ #restaurants-list p {
+   margin-top: 10px;
+   font-size: 14pt;
+ }
+ #restaurants-list li a {
+   background-color:#800000;
+   border-bottom: 3px solid #eee;
+   color: #fff;
+   display: inline-block;
+   font-size: 10pt;
+   margin: 15px 0 0;
+   padding: 8px 30px 10px;
+   border-radius:7px;
+   text-align: center;
+   text-decoration: none;
+   text-transform: uppercase;
+ }
+ /* ====================== Map ====================== */
+#map {
+  height: 400px;
+  width: auto;
+  background-color: #ccc;
+  margin:auto;
+  margin-top:20px;
+  border:4px solid #ffaadd;
+  border-radius:5px;
+  padding:20px;
+}
+} 
+
+/* =============================  Desktop   ================================================= */
+@media screen and (min-width:800px){
+  #restaurants-list {
     display:flex;
     flex-flow:row wrap; 
     justify-content: center;  
@@ -54,6 +196,7 @@
    text-transform: uppercase;
  }
 
+
  /* ====================== Map ====================== */
 #map {
   height: 400px;
@@ -65,7 +208,7 @@
   border-radius:5px;
   padding:20px;
 }
- 
+} 
 
 
 /* Skipping Google map in tabbing order - forward */
@@ -207,4 +350,5 @@ h1, h2, h3, h4, h5, h6 {
   padding: 0 10px;
   width: 250px;
 }
+   
 

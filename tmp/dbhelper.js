@@ -1,8 +1,6 @@
 /**
  * Common database helper functions.
  */
-
-
  class DBHelper {
   static get DATABASE_URL() {
     const port = 1337 // Change this to your server port
@@ -45,7 +43,8 @@ static fetchRestaurants(callback){
       callback(null, data);
   }); 
   return;
-  };
+  }
+  else{
   fetch(DBHelper.DATABASE_URL)
     .then((response) =>  
     response.json())
@@ -56,6 +55,7 @@ static fetchRestaurants(callback){
     .catch(function(err){
       const error = (`Request failed. Returned status of ${err}.`);
   });
+}
 }
 
  /**
@@ -76,7 +76,7 @@ static fetchRestaurants(callback){
       .then((response) =>  
        response.json())
       .then((res) => {
-        const reviews = res;    
+        const reviews = res; 
         callback(null,reviews);
          })
       .catch(function(err){
@@ -134,7 +134,7 @@ static fetchRestaurants(callback){
       } else {
         // Filter restaurants to have only given cuisine type
         const results = restaurants.filter(r => r.cuisine_type == cuisine);
-        callback(null, results);
+         callback(null, results);
       }
     });
   }
@@ -181,14 +181,16 @@ static fetchRestaurants(callback){
   /**
    * Fetch all neighborhoods with proper error handling.
    */
+
   static fetchNeighborhoods(callback) {
     // Fetch all restaurants
-    DBHelper.fetchRestaurants((error, restaurants) => {
+         DBHelper.fetchRestaurants((error, restaurants) => {
       if (error) {
         callback(error, null);
       } else {
         // Get all neighborhoods from all restaurants
         const neighborhoods = restaurants.map((v, i) => restaurants[i].neighborhood)
+
         // Remove duplicates from neighborhoods
         const uniqueNeighborhoods = neighborhoods.filter((v, i) => neighborhoods.indexOf(v) == i)
         callback(null, uniqueNeighborhoods);
@@ -240,13 +242,47 @@ static fetchRestaurants(callback){
   static imageUrlForLazy_load(restaurant)  {
     return (`/img/${restaurant.photograph["lazy"]}`);
   }
-
-  static favourite_restaurant(restaurant){
-    return (restaurant.is_favorite);
-  }
   static restaurant_ID(restaurant){
     return (restaurant.id);
   }
+
+static restaurant_fav(restaurant){
+  return (restaurant.is_favorite);
+}
+
+static fetchAndCacheRestaurants(){
+  return fetch(DBHelper.DATABASE_URL+'restaurants')
+  .then(response => response.json())
+  .then(restaurants => {
+    return this.dbPromise()
+      .then(db => {
+     const tx=db.transaction('restaurants','readwrite');
+     const restaurantStore=tx.objectStore('restaurants');
+     restaurants.forEach(restaurant => restaurantStore.put(restaurant));
+     return tx.complete.then(() => Promise.resolve(restaurants));
+    });  
+  })
+}
+
+static updateFavouriteStatus(restaurantId, isFavorite){
+console.log('Changed state to '+ isFavorite);
+return fetch(`http://localhost:1337/restaurants/${restaurantId}?is_favorite=${isFavorite}`, {
+  method: 'PUT'
+  })
+.then(() =>{
+  console.log('status changed');
+  this.dbPromise();
+})
+.then(db => {
+  const tx=db.transaction('restaurants','readwrite');
+  const restaurantsStore=tx.objectStore('restaurants');
+  restaurantsStore.get(restaurantId)
+  .then(restaurant => {
+    restaurant.is_favorite=isFavorite;
+    restaurantsStore.put(restaurnt);  
+  })
+})
+}
 
   /**
    * Map marker for a restaurant.
@@ -257,10 +293,10 @@ static fetchRestaurants(callback){
       title: restaurant.name,
       url: DBHelper.urlForRestaurant(restaurant),
       map: map,
+      icon:'../img/mkrman.jpg',
       animation: google.maps.Animation.DROP}
     );
     return marker;
   }
-
 
 }
